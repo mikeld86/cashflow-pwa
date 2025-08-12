@@ -1,45 +1,60 @@
 <!doctype html>
-<html lang="en" data-theme="light" data-accent="green">
+<html lang="en" data-theme="light" data-accent="blue">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cash Flow</title>
+
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#0fa836" />
-  <link rel="preload" as="style" href="styles.css?v=20250812085536">
-  <link rel="stylesheet" href="styles.css?v=20250812085536" />
+
+  <link rel="preload" as="style" href="styles.css?v=20250812092228">
+  <link rel="stylesheet" href="styles.css?v=20250812092228" />
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <div class="wrap">
     <header class="app-header">
       <h1 class="app-title">Cash Flow</h1>
+
       <div class="badges">
         <span id="saveState" class="pill badge">Saved</span>
         <span id="authStatus" class="pill badge muted">Signed out</span>
       </div>
+  </br>
+
+      <!-- Toolbar: left group & right group -->
       <div class="toolbar">
         <div class="left-group">
-          <button class="pill nav" data-goto="home" title="Home">Home</button>
+          <!-- Icon-only Home button -->
+          <button class="pill nav icon" data-goto="home" title="Home" aria-label="Home">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M3 10.5 12 4l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" />
+            </svg>
+          </button>
           <button class="pill nav" data-goto="summary">Summary</button>
           <button class="pill nav" data-goto="edit">Income &amp; Expenses</button>
         </div>
         <div class="right-group">
           <button class="pill" id="themeToggle" title="Toggle dark mode">🌙 Light</button>
+
+          <!-- Select styled exactly like other pills -->
           <label class="select-pill">
-            <select id="accentPicker" title="Accent colour">
-              <option value="green">Green</option>
-              <option value="teal">Teal</option>
+            <select id="accentPicker" title="Accent colour" aria-label="Accent colour">
               <option value="blue">Blue</option>
               <option value="purple">Purple</option>
+              <option value="green">Green</option>
+              <option value="teal">Teal</option>
               <option value="amber">Amber</option>
             </select>
           </label>
+
           <button class="pill" id="authBtn">Sign in</button>
         </div>
       </div>
     </header>
 
+    <!-- HOME -->
     <section class="card active" data-view="home">
       <div class="card-head">
         <div class="title-row">
@@ -60,6 +75,7 @@
       </div>
     </section>
 
+    <!-- SUMMARY -->
     <section class="card" data-view="summary">
       <div class="card-head">
         <div class="title-row">
@@ -75,6 +91,7 @@
             <tr><td class="strong">Income</td><td class="right">$</td><td class="right mono" id="sumIncThis">$0.00</td></tr>
             <tr><td class="strong">Expenses</td><td class="right">$</td><td class="right mono neg" id="sumExpThis">$0.00</td></tr>
             <tr class="hl"><td class="strong">REMAINING</td><td class="right">$</td><td class="right mono" id="remainThis">$0.00</td></tr>
+
             <tr class="band"><td colspan="3">NEXT WEEK</td></tr>
             <tr><td class="strong">Cash on hand</td><td class="right">$</td><td class="right mono" id="sumCashNext">$0.00</td></tr>
             <tr><td class="strong">Income</td><td class="right">$</td><td class="right mono" id="sumIncNext">$0.00</td></tr>
@@ -85,6 +102,7 @@
       </div>
     </section>
 
+    <!-- EDIT -->
     <section class="card" data-view="edit">
       <div class="card-head">
         <div class="title-row">
@@ -162,7 +180,7 @@
     $('#themeToggle').textContent = next==='dark' ? '☀️ Light' : '🌙 Light';
   };
 
-  const accent = localStorage.getItem('accent') || 'green';
+  const accent = localStorage.getItem('accent') || 'blue';
   document.documentElement.setAttribute('data-accent', accent);
   $('#accentPicker').value = accent;
   $('#accentPicker').onchange = e => {
@@ -170,6 +188,7 @@
     localStorage.setItem('accent', e.target.value);
   };
 
+  // SPA nav + active state
   function setActive(view) {
     $$('.card[data-view]').forEach(x => x.classList.remove('active'));
     document.querySelector(`[data-view="${view}"]`).classList.add('active');
@@ -179,10 +198,35 @@
     const v = b.dataset.goto; if (!v) return;
     b.onclick = () => { setActive(v); calc(); };
   });
-  setActive('home');
+  setActive('home'); // initial
 
-  // State & calc
-  const DEFAULT = {cashOnHand:[{label:'Cash',amount:455},{label:'Cash',amount:0},{label:'Bank',amount:2048.6},{label:'Bank',amount:0},{label:'Unpaid',amount:100},{label:'Other Income',amount:963.5}],income:[{label:'Proj. Sales (this week)',bucket:'this',amount:350},{label:'Proj. Sales (Next week)',bucket:'next',amount:4550}],expensesThis:[{label:'Supply Chain',amount:2000},{label:'Other',amount:750}],expensesNext:[{label:'Rent',amount:1300},{label:'Car',amount:500},{label:'Electricity',amount:50},{label:'Phone',amount:300},{label:'Other',amount:0},{label:'Other',amount:0}]};
+  // State
+  const DEFAULT = {
+    cashOnHand: [
+      {label:'Cash', amount:455},
+      {label:'Cash', amount:0},
+      {label:'Bank', amount:2048.6},
+      {label:'Bank', amount:0},
+      {label:'Unpaid', amount:100},
+      {label:'Other Income', amount:963.5},
+    ],
+    income: [
+      {label:'Proj. Sales (this week)', bucket:'this', amount:350},
+      {label:'Proj. Sales (Next week)', bucket:'next', amount:4550},
+    ],
+    expensesThis: [
+      {label:'Supply Chain', amount:2000},
+      {label:'Other', amount:750},
+    ],
+    expensesNext: [
+      {label:'Rent', amount:1300},
+      {label:'Car', amount:500},
+      {label:'Electricity', amount:50},
+      {label:'Phone', amount:300},
+      {label:'Other', amount:0},
+      {label:'Other', amount:0},
+    ]
+  };
   let state = load() || DEFAULT;
 
   const fmt = n => Number(n||0).toLocaleString(undefined,{style:'currency',currency:'AUD',maximumFractionDigits:2});
@@ -195,18 +239,64 @@
 
   function row(obj, onChange){ const tr=document.createElement('tr'); tr.innerHTML=`<td><input type="text" value="${obj.label||''}"></td><td class="right"><input type="number" step="0.01" value="${obj.amount??''}"></td>`; const [label, amt]=tr.querySelectorAll('input'); label.oninput=e=>{obj.label=e.target.value;saveSoon();}; amt.oninput=e=>{obj.amount=e.target.value;onChange();}; return tr; }
 
-  function render(){ const cashT=$('#cashOnHandTable'); cashT.innerHTML=''; state.cashOnHand.forEach(r=>cashT.appendChild(row(r,calc))); const incT=$('#incomeTable'); incT.innerHTML=''; state.income.forEach(r=>incT.appendChild(row(r,calc))); const outThis=$('#outThisTable'); outThis.innerHTML=''; state.expensesThis.forEach(r=>outThis.appendChild(row(r,calc))); const outNext=$('#outNextTable'); outNext.innerHTML=''; state.expensesNext.forEach(r=>outNext.appendChild(row(r,calc))); calc(); }
+  function render(){
+    const cashT = $('#cashOnHandTable'); cashT.innerHTML=''; state.cashOnHand.forEach(r=>cashT.appendChild(row(r,calc)));
+    const incT = $('#incomeTable'); incT.innerHTML=''; state.income.forEach(r=>incT.appendChild(row(r,calc)));
+    const outThis = $('#outThisTable'); outThis.innerHTML=''; state.expensesThis.forEach(r=>outThis.appendChild(row(r,calc)));
+    const outNext = $('#outNextTable'); outNext.innerHTML=''; state.expensesNext.forEach(r=>outNext.appendChild(row(r,calc)));
+    calc();
+  }
 
-  function calc(){ const cash=state.cashOnHand.reduce((s,x)=>s+num(x.amount),0); const incThis=state.income.filter(x=>x.bucket!=='next').reduce((s,x)=>s+num(x.amount),0); const incNext=state.income.filter(x=>x.bucket==='next').reduce((s,x)=>s+num(x.amount),0); const expThis=state.expensesThis.reduce((s,x)=>s+num(x.amount),0); const expNext=state.expensesNext.reduce((s,x)=>s+num(x.amount),0); const availThis=cash+incThis; const remainThis=availThis-expThis; const carry=Math.max(0,remainThis); const availNext=carry+incNext; const remainNext=availNext-expNext; $('#homeCash').textContent=fmt(cash); $('#sumCashOnHand').textContent=fmt(cash); $('#sumIncThis').textContent=fmt(incThis); $('#sumExpThis').textContent=fmt(expThis); $('#remainThis').textContent=fmt(remainThis); $('#sumCashNext').textContent=fmt(carry); $('#sumIncNext').textContent=fmt(incNext); $('#sumExpNext').textContent=fmt(expNext); $('#remainNext').textContent=fmt(remainNext); $('#cashOnHandTotal').textContent=fmt(cash); $('#incomeTotal').textContent=fmt(incThis+incNext); $('#expThisTotal').textContent=fmt(expThis); $('#expNextTotal').textContent=fmt(expNext); saveSoon(); }
+  function calc(){
+    const cash = state.cashOnHand.reduce((s,x)=>s+num(x.amount),0);
+    const incThis = state.income.filter(x=>x.bucket!=='next').reduce((s,x)=>s+num(x.amount),0);
+    const incNext = state.income.filter(x=>x.bucket==='next').reduce((s,x)=>s+num(x.amount),0);
+    const expThis = state.expensesThis.reduce((s,x)=>s+num(x.amount),0);
+    const expNext = state.expensesNext.reduce((s,x)=>s+num(x.amount),0);
 
-  const addIncome=b=>{state.income.push({label:'Income',bucket:b,amount:0});render();};
-  const addCash=()=>{state.cashOnHand.push({label:'Other',amount:0});render();};
-  const addThis=()=>{state.expensesThis.push({label:'Other',amount:0});render();};
-  const addNext=()=>{state.expensesNext.push({label:'Other',amount:0});render();};
-  $('#addCashRowTop').onclick=addCash; $('#addIncomeThisTop').onclick=()=>addIncome('this'); $('#addIncomeNextTop').onclick=()=>addIncome('next'); $('#addThisRowTop').onclick=addThis; $('#addNextRowTop').onclick=addNext;
-  $('#addCashRow').onclick=addCash; $('#addIncomeThis').onclick=()=>addIncome('this'); $('#addIncomeNext').onclick=()=>addIncome('next'); $('#addThisRow').onclick=addThis; $('#addNextRow').onclick=addNext;
+    const availThis = cash + incThis;
+    const remainThis = availThis - expThis;
+    const carry = Math.max(0, remainThis);
+    const availNext = carry + incNext;
+    const remainNext = availNext - expNext;
 
-  const exportCsv = () => { const csv=s=>`"$\{String(s||'').replace(/"/g,'""')}"`; const n=v=>Number(v||0); const lines=['Section,Label,Bucket,Amount']; state.cashOnHand.forEach(r=>lines.push(['Cash on Hand',csv(r.label),'',n(r.amount)].join(','))); state.income.forEach(r=>lines.push(['Income',csv(r.label),r.bucket,n(r.amount)].join(','))); state.expensesThis.forEach(r=>lines.push(['Expenses',csv(r.label),'this',n(r.amount)].join(','))); state.expensesNext.forEach(r=>lines.push(['Expenses',csv(r.label),'next',n(r.amount)].join(','))); const blob=new Blob([lines.join('\n')],{type:'text/csv'}); const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'cashflow.csv'}); a.click(); URL.revokeObjectURL(a.href); };
+    $('#homeCash').textContent = fmt(cash);
+    $('#sumCashOnHand').textContent = fmt(cash);
+    $('#sumIncThis').textContent = fmt(incThis);
+    $('#sumExpThis').textContent = fmt(expThis);
+    $('#remainThis').textContent = fmt(remainThis);
+    $('#sumCashNext').textContent = fmt(carry);
+    $('#sumIncNext').textContent = fmt(incNext);
+    $('#sumExpNext').textContent = fmt(expNext);
+    $('#remainNext').textContent = fmt(remainNext);
+
+    $('#cashOnHandTotal').textContent = fmt(cash);
+    $('#incomeTotal').textContent = fmt(incThis + incNext);
+    $('#expThisTotal').textContent = fmt(expThis);
+    $('#expNextTotal').textContent = fmt(expNext);
+
+    saveSoon();
+  }
+
+  const addIncome = b => { state.income.push({label:'Income', bucket:b, amount:0}); render(); };
+  const addCash = () => { state.cashOnHand.push({label:'Other', amount:0}); render(); };
+  const addThis = () => { state.expensesThis.push({label:'Other', amount:0}); render(); };
+  const addNext = () => { state.expensesNext.push({label:'Other', amount:0}); render(); };
+  $('#addCashRowTop').onclick = addCash; $('#addIncomeThisTop').onclick = () => addIncome('this'); $('#addIncomeNextTop').onclick = () => addIncome('next'); $('#addThisRowTop').onclick = addThis; $('#addNextRowTop').onclick = addNext;
+  $('#addCashRow').onclick = addCash; $('#addIncomeThis').onclick = () => addIncome('this'); $('#addIncomeNext').onclick = () => addIncome('next'); $('#addThisRow').onclick = addThis; $('#addNextRow').onclick = addNext;
+
+  const exportCsv = () => {
+    const csv = s => `"$\{String(s||'').replace(/"/g,'""')}"`;
+    const n = v => Number(v||0);
+    const lines = ['Section,Label,Bucket,Amount'];
+    state.cashOnHand.forEach(r=> lines.push(['Cash on Hand', csv(r.label), '', n(r.amount)].join(',')));
+    state.income.forEach(r=> lines.push(['Income', csv(r.label), r.bucket, n(r.amount)].join(',')));
+    state.expensesThis.forEach(r=> lines.push(['Expenses', csv(r.label), 'this', n(r.amount)].join(',')));
+    state.expensesNext.forEach(r=> lines.push(['Expenses', csv(r.label), 'next', n(r.amount)].join(',')));
+    const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+    const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'cashflow.csv'});
+    a.click(); URL.revokeObjectURL(a.href);
+  };
   ['#exportCsvHome','#exportCsvSummary','#exportCsvEdit'].forEach(id=>document.querySelector(id).onclick=exportCsv);
 
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
