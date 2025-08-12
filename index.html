@@ -6,8 +6,8 @@
   <title>Cash Flow</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#0fa836" />
-  <link rel="preload" as="style" href="styles.css?v=20250812081433">
-  <link rel="stylesheet" href="styles.css?v=20250812081433" />
+  <link rel="preload" as="style" href="styles.css?v=20250812085536">
+  <link rel="stylesheet" href="styles.css?v=20250812085536" />
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -20,9 +20,9 @@
       </div>
       <div class="toolbar">
         <div class="left-group">
-          <button class="pill" data-goto="home" title="Home">Home</button>
-          <button class="pill" data-goto="summary">Summary</button>
-          <button class="pill" data-goto="edit">Income &amp; Expenses</button>
+          <button class="pill nav" data-goto="home" title="Home">Home</button>
+          <button class="pill nav" data-goto="summary">Summary</button>
+          <button class="pill nav" data-goto="edit">Income &amp; Expenses</button>
         </div>
         <div class="right-group">
           <button class="pill" id="themeToggle" title="Toggle dark mode">🌙 Light</button>
@@ -75,7 +75,6 @@
             <tr><td class="strong">Income</td><td class="right">$</td><td class="right mono" id="sumIncThis">$0.00</td></tr>
             <tr><td class="strong">Expenses</td><td class="right">$</td><td class="right mono neg" id="sumExpThis">$0.00</td></tr>
             <tr class="hl"><td class="strong">REMAINING</td><td class="right">$</td><td class="right mono" id="remainThis">$0.00</td></tr>
-
             <tr class="band"><td colspan="3">NEXT WEEK</td></tr>
             <tr><td class="strong">Cash on hand</td><td class="right">$</td><td class="right mono" id="sumCashNext">$0.00</td></tr>
             <tr><td class="strong">Income</td><td class="right">$</td><td class="right mono" id="sumIncNext">$0.00</td></tr>
@@ -152,21 +151,38 @@
   const $$ = s => document.querySelectorAll(s);
   const supa = window.supabase.createClient('https://heeewuebfqimpwltpoik.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlZWV3dWViZnFpbXB3bHRwb2lrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5NzYyMDMsImV4cCI6MjA3MDU1MjIwM30.PB9Nu-ASlsinZWu4ApYwVPD4OBPINjpmJQPpfXideHY');
 
+  // Theme + accent
   const theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
   $('#themeToggle').textContent = theme==='dark' ? '☀️ Light' : '🌙 Light';
-  $('#themeToggle').onclick = () => { const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', next); localStorage.setItem('theme', next); $('#themeToggle').textContent = next==='dark' ? '☀️ Light' : '🌙 Light'; };
+  $('#themeToggle').onclick = () => {
+    const next = document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    $('#themeToggle').textContent = next==='dark' ? '☀️ Light' : '🌙 Light';
+  };
 
   const accent = localStorage.getItem('accent') || 'green';
   document.documentElement.setAttribute('data-accent', accent);
   $('#accentPicker').value = accent;
-  $('#accentPicker').onchange = e => { document.documentElement.setAttribute('data-accent', e.target.value); localStorage.setItem('accent', e.target.value); };
+  $('#accentPicker').onchange = e => {
+    document.documentElement.setAttribute('data-accent', e.target.value);
+    localStorage.setItem('accent', e.target.value);
+  };
 
-  $$('.pill,[data-goto].btn').forEach(b => { const v=b.dataset.goto; if(!v) return;
-    b.onclick = () => { $$('.card[data-view]').forEach(x=>x.classList.remove('active')); document.querySelector(`[data-view="${v}"]`).classList.add('active'); calc(); };
+  function setActive(view) {
+    $$('.card[data-view]').forEach(x => x.classList.remove('active'));
+    document.querySelector(`[data-view="${view}"]`).classList.add('active');
+    $$('.pill.nav').forEach(btn => btn.classList.toggle('active', btn.dataset.goto === view));
+  }
+  $$('.pill.nav,[data-goto].btn').forEach(b => {
+    const v = b.dataset.goto; if (!v) return;
+    b.onclick = () => { setActive(v); calc(); };
   });
+  setActive('home');
 
-  const DEFAULT = { cashOnHand:[{label:'Cash',amount:455},{label:'Cash',amount:0},{label:'Bank',amount:2048.6},{label:'Bank',amount:0},{label:'Unpaid',amount:100},{label:'Other Income',amount:963.5}], income:[{label:'Proj. Sales (this week)',bucket:'this',amount:350},{label:'Proj. Sales (Next week)',bucket:'next',amount:4550}], expensesThis:[{label:'Supply Chain',amount:2000},{label:'Other',amount:750}], expensesNext:[{label:'Rent',amount:1300},{label:'Car',amount:500},{label:'Electricity',amount:50},{label:'Phone',amount:300},{label:'Other',amount:0},{label:'Other',amount:0}] };
+  // State & calc
+  const DEFAULT = {cashOnHand:[{label:'Cash',amount:455},{label:'Cash',amount:0},{label:'Bank',amount:2048.6},{label:'Bank',amount:0},{label:'Unpaid',amount:100},{label:'Other Income',amount:963.5}],income:[{label:'Proj. Sales (this week)',bucket:'this',amount:350},{label:'Proj. Sales (Next week)',bucket:'next',amount:4550}],expensesThis:[{label:'Supply Chain',amount:2000},{label:'Other',amount:750}],expensesNext:[{label:'Rent',amount:1300},{label:'Car',amount:500},{label:'Electricity',amount:50},{label:'Phone',amount:300},{label:'Other',amount:0},{label:'Other',amount:0}]};
   let state = load() || DEFAULT;
 
   const fmt = n => Number(n||0).toLocaleString(undefined,{style:'currency',currency:'AUD',maximumFractionDigits:2});
