@@ -1,0 +1,10 @@
+{
+  "name": "Cash Flow",
+  "short_name": "Cash Flow",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0c1117",
+  "theme_color": "#0fa836",
+  "icons": []
+}
