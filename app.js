@@ -1,0 +1,1 @@
+// Updated app.js with Cash Calculator, Clear buttons, live summary calculations, Supabase hooks

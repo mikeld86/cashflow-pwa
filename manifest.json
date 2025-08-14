@@ -1,0 +1,9 @@
+{
+  "name": "Cashflow PWA",
+  "short_name": "Cashflow",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2ECC71",
+  "icons": []
+}
