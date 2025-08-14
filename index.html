@@ -1,1 +1,47 @@
-<!-- Updated index.html with new UI/UX, live summary logic, Space Mono font, theme swatches -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-accent="green">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cashflow Calculator</title>
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+  <meta name="theme-color" content="#2ECC71" />
+  <!-- Styles and fonts -->
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Supabase & app script -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="env.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Cashflow Calculator</h1>
+      <div class="status-row">
+        <span class="badge" id="saveStatus" role="status" aria-live="polite">Saved</span>
+        <span class="badge" id="authStatus">Signed out</span>
+      </div>
+      <nav class="nav-row" aria-label="Main navigation">
+        <div class="nav-left">
+          <a href="#/" data-route="/" class="nav-btn active" aria-current="page">Home</a>
+          <a href="#/summary" data-route="/summary" class="nav-btn">Summary</a>
+          <a href="#/income" data-route="/income" class="nav-btn">Income &amp; Expenses</a>
+          <a href="#/cash" data-route="/cash" class="nav-btn">Cash</a>
+        </div>
+        <div class="nav-right">
+          <button id="themeToggle" class="icon-btn" aria-label="Toggle theme"></button>
+          <div id="accentSelect" class="accent-select" aria-label="Accent colour selection"></div>
+          <button id="authButton" class="icon-btn" aria-label="Sign in">🔑</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <main class="container" id="app">
+    <!-- Content will be injected here by app.js -->
+  </main>
+</body>
+</html>

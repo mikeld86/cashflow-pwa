@@ -1,9 +1,19 @@
 {
-  "name": "Cashflow PWA",
-  "short_name": "Cashflow",
-  "start_url": ".",
+  "name": "Cashflow Calculator",
+  "short_name": "CashflowCalc",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
   "background_color": "#ffffff",
   "theme_color": "#2ECC71",
-  "icons": []
+  "description": "Track cash flow, sales and expenses.",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/apple-touch-icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "categories": ["finance", "productivity"],
+  "orientation": "portrait"
 }
