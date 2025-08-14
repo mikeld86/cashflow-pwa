@@ -18,12 +18,21 @@ const metaTheme = document.querySelector('meta[name="theme-color"]');
 
 // Define available accent colours. Names map to human‑readable names and hex values.
 const ACCENTS = {
-  green: '#2ECC71',
-  blue:  '#3498DB',
-  orange:'#E67E22',
-  purple:'#9B59B6',
-  red:   '#E74C3C',
-  teal:  '#1ABC9C'
+  /**
+   * Custom colour palette matching the supplied scheme:
+   * black:    rich black
+   * lavender: lavender (web)
+   * pink:     bright pink (Crayola)
+   * blue:     palatinate blue
+   * purple:   purpureus
+   * lime:     lemon lime
+   */
+  black:    '#000314',
+  lavender: '#EBEEFF',
+  pink:     '#EF476F',
+  blue:     '#1447E1',
+  purple:   '#9349C1',
+  lime:     '#F2FF49'
 };
 
 /**
@@ -32,7 +41,7 @@ const ACCENTS = {
  * @param {string} colourKey
  */
 function setAccent(colourKey) {
-  const value = ACCENTS[colourKey] || ACCENTS.green;
+  const value = ACCENTS[colourKey] || ACCENTS.black;
   document.documentElement.setAttribute('data-accent', colourKey);
   localStorage.setItem('accent', colourKey);
   // update theme colour to accent for standalone browser UI
@@ -66,7 +75,7 @@ function updateThemeButton(theme) {
 
 // Initialize theme and accent from stored preferences or defaults
 (function initPreferences() {
-  const storedAccent = localStorage.getItem('accent') || 'green';
+  const storedAccent = localStorage.getItem('accent') || 'black';
   const storedTheme = localStorage.getItem('theme') || 'light';
   // Create swatch buttons in the accent container
   accentContainer.innerHTML = '';

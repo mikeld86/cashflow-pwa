@@ -21,12 +21,13 @@
 }
 
 /* Accent colours mapped via data-accent on the html element */
-[data-accent="green"] { --accent: #2ECC71; }
-[data-accent="blue"]  { --accent: #3498DB; }
-[data-accent="orange"]{ --accent: #E67E22; }
-[data-accent="purple"]{ --accent: #9B59B6; }
-[data-accent="red"]   { --accent: #E74C3C; }
-[data-accent="teal"]  { --accent: #1ABC9C; }
+/* Colour palette accents. Each key corresponds to an accent name defined in ACCENTS in app.js. */
+[data-accent="black"]    { --accent: #000314; }
+[data-accent="lavender"] { --accent: #EBEEFF; }
+[data-accent="pink"]     { --accent: #EF476F; }
+[data-accent="blue"]     { --accent: #1447E1; }
+[data-accent="purple"]   { --accent: #9349C1; }
+[data-accent="lime"]     { --accent: #F2FF49; }
 
 body {
   margin: 0;
