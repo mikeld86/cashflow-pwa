@@ -34,7 +34,10 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Space Mono', monospace;
+  /* Use a modern, clean typeface for all text. Inter has great
+     readability at a range of weights. Fall back to system sans and
+     monospace for numbers where appropriate. */
+  font-family: 'Inter', sans-serif;
   line-height: 1.4;
 }
 
@@ -77,7 +80,8 @@ header {
   backdrop-filter: saturate(180%) blur(5px);
 }
 .status-row {
-  display: flex;
+  /* Hide the old status bar; statuses now appear in the footer */
+  display: none;
   justify-content: center;
   gap: 8px;
   margin-top: 6px;
@@ -121,11 +125,20 @@ header {
 /* Icon buttons: round and minimal */
 /* Icon buttons for add/remove/clear actions. Use a smaller size and
    thinner border so they don't visually overpower other inputs. */
+/*
+ * Compact icon buttons for add/remove actions. We shrink the size slightly
+ * relative to the row height and completely remove the border to avoid
+ * the heavy outlined circles seen previously. Instead, the buttons rely
+ * solely on colour and hover state to communicate interactivity.
+ */
 .icon-btn {
-  width: var(--row-height);
-  height: var(--row-height);
+  width: calc(var(--row-height) - 6px);
+  height: calc(var(--row-height) - 6px);
   border-radius: 50%;
-  border: 1px solid var(--accent);
+  /* Remove outlines and shadows entirely */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,6 +162,14 @@ header {
   cursor: pointer;
   padding: 0 6px;
   font-family: 'Space Mono', monospace;
+}
+
+/* Larger text buttons for add/remove icons within rows and section controls. */
+.text-btn.add-line,
+.text-btn.remove-row {
+  font-size: 1.1rem;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 /* Accent swatches for colour selection */
@@ -201,12 +222,21 @@ header {
 /* Rows for forms and subtotals */
 .row {
   display: grid;
-  /* A flexible description column, a fixed amount column and a small icon column */
+  /* Three columns: description (flexible), amount (fixed width) and a small icon column
+     for row removal. Fix the widths to avoid overlap of values and icons. */
   grid-template-columns: 1fr 90px 28px;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-height: var(--row-height);
-  padding: 4px 0;
+  /* Reduce vertical padding for tighter grouping of rows */
+  padding: 2px 0;
+}
+
+/* Rows that do not have an action column (e.g. note/coin totals) should only define
+   two columns: description and value. This prevents an empty third column
+   causing misalignment. */
+.row.no-remove {
+  grid-template-columns: 1fr 90px;
 }
 .row.subtotals {
   margin-top: 8px;
@@ -295,4 +325,36 @@ input.amount, input.qty {
   .icon-btn { width: 28px; height: 28px; font-size: 0.9rem; }
   input.desc, input.amount, input.qty { height: 28px; font-size: 0.8rem; }
   .summary-col { flex-basis: 100%; }
+}
+
+/* Footer displaying save and authentication status.
+   Positioned at the bottom of the content area; uses small text size
+   and muted colours to minimise distraction. */
+.status-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  border-top: 1px solid var(--section-border);
+  background: var(--bg);
+}
+.status-footer .separator {
+  opacity: 0.4;
+  margin: 0 4px;
+}
+
+/* Improve contrast for light accents in dark theme.  Some pastel colours like
+   lavender, lime or pink become very bright on dark backgrounds.  When the
+   accent has a high lightness we switch the active nav text to dark
+   (black) to maintain legibility. */
+[data-theme="dark"][data-accent="lavender"] .nav-btn.active,
+[data-theme="dark"][data-accent="lavender"] .nav-btn[aria-current="page"],
+[data-theme="dark"][data-accent="lime"] .nav-btn.active,
+[data-theme="dark"][data-accent="lime"] .nav-btn[aria-current="page"],
+[data-theme="dark"][data-accent="pink"] .nav-btn.active,
+[data-theme="dark"][data-accent="pink"] .nav-btn[aria-current="page"] {
+  color: #000;
 }

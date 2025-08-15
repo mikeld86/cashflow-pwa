@@ -143,17 +143,27 @@ function loadState() {
 
 /** Persist the current state to localStorage and show saving status. */
 function saveState() {
-  localStorage.setItem('state-cashflow', JSON.stringify(state));
-  indicateSaving();
+  try {
+    localStorage.setItem('state-cashflow', JSON.stringify(state));
+    indicateSaving();
+  } catch (err) {
+    console.error('Error saving state', err);
+    saveStatus.textContent = 'Error saving';
+  }
 }
 
 /** Update the save badge to indicate saving or saved. */
 function indicateSaving() {
+  // Show a saving indicator immediately
   saveStatus.textContent = 'Saving…';
   clearTimeout(window.__saveTimer);
   window.__saveTimer = setTimeout(() => {
-    saveStatus.textContent = 'Saved';
-  }, 400);
+    // Append a timestamp to the saved message for better context. The time is
+    // formatted as HH:MM based on the user’s locale.
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    saveStatus.textContent = `Saved • ${timeStr}`;
+  }, 500);
 }
 
 // ----------------------
@@ -277,7 +287,8 @@ function renderIncomePage() {
       <div class="row" data-section="${sectionKey}" data-index="${idx}">
         <input class="desc" placeholder="Description" value="${row.desc || ''}">
         <input class="amount" type="number" step="0.01" inputmode="decimal" placeholder="Amount" value="${row.amount || ''}">
-        <button class="icon-btn remove-row" aria-label="Remove row">×</button>
+        <!-- Use a lightweight text button with a simple × glyph for row removal -->
+        <button class="text-btn remove-row" aria-label="Remove row">×</button>
       </div>
     `).join('');
   }
@@ -287,19 +298,21 @@ function renderIncomePage() {
       <header>
         <h3>Cash Flow</h3>
         <div class="controls">
-          <button class="icon-btn add-line" data-action="cashflow" aria-label="Add cash flow line">+</button>
+          <!-- Use text buttons for adding lines to reduce visual weight -->
+          <button class="text-btn add-line" data-action="cashflow" aria-label="Add cash flow line">+</button>
           <button class="text-btn clear-section" data-action="cashflow">Clear</button>
         </div>
       </header>
-      <div class="row">
+      <!-- Display note and coin subtotals. Place the value in the second column for better alignment -->
+      <div class="row no-remove">
         <div class="badge-inline">Notes</div>
-        <div></div>
         <div class="value">$${totals.notesSubtotal.toFixed(2)}</div>
-      </div>
-      <div class="row">
-        <div class="badge-inline">Coins</div>
         <div></div>
+      </div>
+      <div class="row no-remove">
+        <div class="badge-inline">Coins</div>
         <div class="value">$${totals.coinsSubtotal.toFixed(2)}</div>
+        <div></div>
       </div>
       ${buildRows(state.income.cashFlowExtra, 'cashFlowExtra')}
     </section>
@@ -308,7 +321,7 @@ function renderIncomePage() {
       <header>
         <h3>Income</h3>
         <div class="controls">
-          <button class="icon-btn add-line" data-action="income" aria-label="Add income line">+</button>
+          <button class="text-btn add-line" data-action="income" aria-label="Add income line">+</button>
           <button class="text-btn clear-section" data-action="income">Clear</button>
         </div>
       </header>
@@ -319,7 +332,7 @@ function renderIncomePage() {
       <header>
         <h3>Outgoing – This week</h3>
         <div class="controls">
-          <button class="icon-btn add-line" data-action="out-this" aria-label="Add outgoing line">+</button>
+          <button class="text-btn add-line" data-action="out-this" aria-label="Add outgoing line">+</button>
           <button class="text-btn clear-section" data-action="out-this">Clear</button>
         </div>
       </header>
@@ -330,7 +343,7 @@ function renderIncomePage() {
       <header>
         <h3>Outgoing – Next week</h3>
         <div class="controls">
-          <button class="icon-btn add-line" data-action="out-next" aria-label="Add outgoing line">+</button>
+          <button class="text-btn add-line" data-action="out-next" aria-label="Add outgoing line">+</button>
           <button class="text-btn clear-section" data-action="out-next">Clear</button>
         </div>
       </header>

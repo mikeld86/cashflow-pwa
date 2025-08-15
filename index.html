@@ -12,21 +12,22 @@
        will dynamically update this based on the selected accent. -->
   <meta name="theme-color" content="#000314" />
   <!-- Styles and fonts -->
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Append a version query to bust caches when styles change -->
+  <link rel="stylesheet" href="styles.css?v=4" />
+  <!-- Load Inter for a modern, clean typeface -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
   <!-- Supabase & app script -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="env.js"></script>
-  <script defer src="app.js"></script>
+  <!-- Append a version query to bust caches when app logic changes -->
+  <script defer src="app.js?v=4"></script>
 </head>
 <body>
   <header>
     <div class="container">
       <h1>Cashflow Calculator</h1>
-      <div class="status-row">
-        <span class="badge" id="saveStatus" role="status" aria-live="polite">Saved</span>
-        <span class="badge" id="authStatus">Signed out</span>
-      </div>
+      <!-- Status badges have been moved to the footer for a less obtrusive placement -->
+      
       <nav class="nav-row" aria-label="Main navigation">
         <div class="nav-left">
           <a href="#/" data-route="/" class="nav-btn active" aria-current="page">Home</a>
@@ -37,7 +38,7 @@
         <div class="nav-right">
           <button id="themeToggle" class="icon-btn" aria-label="Toggle theme"></button>
           <div id="accentSelect" class="accent-select" aria-label="Accent colour selection"></div>
-          <button id="authButton" class="icon-btn" aria-label="Sign in">🔑</button>
+          <button id="authButton" class="icon-btn" aria-label="Sign in or sign out">🔑</button>
         </div>
       </nav>
     </div>
@@ -45,5 +46,14 @@
   <main class="container" id="app">
     <!-- Content will be injected here by app.js -->
   </main>
+
+  <!-- Footer contains status indicators for save state and authentication.  The small,
+       unobtrusive placement keeps the focus on the content while still
+       communicating important app state. -->
+  <footer class="status-footer">
+    <span id="saveStatus" role="status" aria-live="polite">Saved</span>
+    <span class="separator">•</span>
+    <span id="authStatus">Signed out</span>
+  </footer>
 </body>
 </html>
