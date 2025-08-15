@@ -1,10 +1,13 @@
 // sw.js - App Shell + offline with network-first navigations
-const CACHE_NAME = 'cashflow-cache-v1';
+// Bump the cache version whenever app shell files change to ensure
+// updated resources are fetched rather than old cached ones.
+const CACHE_NAME = 'cashflow-cache-v3';
 const APP_SHELL = [
   '/',
   '/index.html',
-  '/styles.css',
-  '/app.js',
+  // Include versioned files to ensure the SW caches the latest versions
+  '/styles.css?v=3',
+  '/app.js?v=3',
   '/env.js',
   '/manifest.json',
   '/offline.html',

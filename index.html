@@ -12,12 +12,14 @@
        will dynamically update this based on the selected accent. -->
   <meta name="theme-color" content="#000314" />
   <!-- Styles and fonts -->
-  <link rel="stylesheet" href="styles.css" />
+  <!-- Append a version query to bust caches when styles change -->
+  <link rel="stylesheet" href="styles.css?v=3" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <!-- Supabase & app script -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="env.js"></script>
-  <script defer src="app.js"></script>
+  <!-- Append a version query to bust caches when app logic changes -->
+  <script defer src="app.js?v=3"></script>
 </head>
 <body>
   <header>

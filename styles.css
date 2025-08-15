@@ -121,11 +121,20 @@ header {
 /* Icon buttons: round and minimal */
 /* Icon buttons for add/remove/clear actions. Use a smaller size and
    thinner border so they don't visually overpower other inputs. */
+/*
+ * Compact icon buttons for add/remove actions. We shrink the size slightly
+ * relative to the row height and completely remove the border to avoid
+ * the heavy outlined circles seen previously. Instead, the buttons rely
+ * solely on colour and hover state to communicate interactivity.
+ */
 .icon-btn {
-  width: var(--row-height);
-  height: var(--row-height);
+  width: calc(var(--row-height) - 6px);
+  height: calc(var(--row-height) - 6px);
   border-radius: 50%;
-  border: 1px solid var(--accent);
+  /* Remove outlines and shadows entirely */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,6 +158,14 @@ header {
   cursor: pointer;
   padding: 0 6px;
   font-family: 'Space Mono', monospace;
+}
+
+/* Larger text buttons for add/remove icons within rows and section controls. */
+.text-btn.add-line,
+.text-btn.remove-row {
+  font-size: 1.1rem;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 /* Accent swatches for colour selection */
@@ -202,11 +219,14 @@ header {
 .row {
   display: grid;
   /* A flexible description column, a fixed amount column and a small icon column */
-  grid-template-columns: 1fr 90px 28px;
+  /* Align description, amount and action columns. The amount column has a fixed width
+     while the action column flexes based on content. */
+  grid-template-columns: 1fr 100px auto;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-height: var(--row-height);
-  padding: 4px 0;
+  /* Reduce vertical padding for tighter grouping of rows */
+  padding: 2px 0;
 }
 .row.subtotals {
   margin-top: 8px;
